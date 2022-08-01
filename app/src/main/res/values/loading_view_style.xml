@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LoadingView">
+        <attr name="max_radius" format="integer"/>
+        <attr name="min_radius" format="integer"/>
+        <attr name="ball_color" format="color"/>
+        <attr name="internal" format="integer"/>
+        <attr name="anim_duration" format="integer"/>
+    </declare-styleable>
+</resources>

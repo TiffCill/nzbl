@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        jcenter()
+        maven {url 'https://developer.huawei.com/repo'}
+        maven {url 'https://nexus.1lan.tv/repository/maven-releases/'}
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+
+        jcenter() // Warning: this repository is going to shut down soon
+        maven {url 'https://maven.aliyun.com/nexus/content/repositories/releases/'}
+        maven {url 'https://developer.huawei.com/repo'}
+    }
+}
+rootProject.name = "nzbl"
+include ':app'

@@ -1,0 +1,143 @@
+plugins {
+    id 'com.huawei.agconnect'
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk 30
+
+    defaultConfig {
+        applicationId "com.example.Jpushwyl"
+//        applicationId "com.geek.jk.weather"
+        minSdk 23
+        targetSdk 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            //选择要添加的对应 cpu 类型的 .so 库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            // 还可以添加 'x86', 'x86_64'
+        }
+
+        sourceSets {
+            main {
+                jniLibs.srcDirs = ['libs']
+            }
+        }
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME: applicationId,
+                JPUSH_APPKEY : "68cb962b4809b1f64da96463", //Portal上注册的包名对应的 appKey.
+//                JPUSH_APPKEY : "cc4153ac47c3287833514e0b", //Portal上注册的包名对应的 appKey.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.`
+                XIAOMI_APPID : "MI-2882303761519990116",//小米平台注册的appid
+                XIAOMI_APPKEY: "MI-5401999053116",//小米平台注册的appkey
+                OPPO_APPKEY : "OP-123", // OPPO平台注册的appkey
+                OPPO_APPID : "OP-123", // OPPO平台注册的appid
+                OPPO_APPSECRET: "OP-452",//OPPO平台注册的appsecret
+                VIVO_APPID    : "103912925",
+                VIVO_APPKEY   : "17d3a7316c1210772c930a9da710e8ae"
+        ]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\AURORA\\Desktop\\jks\\wyl.jks')
+            storePassword 'wyl12345678'
+            keyAlias 'wangyilun'
+            keyPassword 'wyl12345678'
+        }
+        release {
+            storeFile file('C:\\Users\\AURORA\\Desktop\\jks\\wyl.jks')
+            storePassword 'wyl12345678'
+            keyAlias 'wangyilun'
+            keyPassword 'wyl12345678'
+        }
+    }
+    buildFeatures {
+        dataBinding true
+        viewBinding true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    kapt {
+        generateStubs = true
+    }
+}
+
+
+dependencies {
+//    implementation fileTree(include: ['*.jar', "*.aar"], dir: 'libs')
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    testImplementation 'junit:junit:4.13.2'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+
+    //JetPack liveData和viewModel包
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.activity:activity-ktx:1.3.1'
+    implementation 'androidx.fragment:fragment-ktx:1.3.6'
+
+    //eventbus
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
+    //极光\n' +
+    implementation 'cn.jiguang.sdk.plugin:xiaomi:4.6.6'
+    implementation 'cn.jiguang.sdk.plugin:huawei:4.6.6'
+    implementation 'cn.jiguang.sdk.plugin:vivo:4.6.6'
+    implementation 'cn.jiguang.sdk.plugin:oppo:4.6.6'
+    implementation 'com.huawei.hms:push:6.3.0.304'
+    implementation 'cn.jiguang.sdk:jpush-google:4.6.4'
+    implementation 'cn.jiguang.sdk:jverification:2.9.1.1'
+    implementation 'cn.jiguang.sdk:jshare:2.0.0'
+    implementation 'cn.jiguang.sdk:jmessage:2.9.2'
+    implementation 'cn.jiguang.sdk:jcore-google:3.3.0'
+
+    // oppo 厂商 aar 需要单独引入，请将 jiguang/libs 下 com.heytap.msp-push-x.x.x.aar 单独拷贝一份到应用 module/libs 下
+//    implementation(name: 'com.heytap.msp-push-3.0.0', ext: 'aar')
+
+
+    //网络请求框架' +
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+
+    //流量
+    //支持ijkplayer进行播放，非必选，建议添加，否则有可能无法检测到全部的播放状态
+    implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.8'
+    implementation fileTree('libs/junion-android-1.2.0.aar')//修改为具体的sdk版本
+    implementation 'cn.jiguang.sdk:jad:5.0.3'
+
+    //媒体
+    implementation 'com.youth.banner:banner:2.1.0'
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+}
