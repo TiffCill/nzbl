@@ -11,4 +11,6 @@ class HomeRepository {
     suspend fun getHomeTabs() = NetWorkClient.createNetWorkClient()?.getTabs()
 
     suspend fun toSearch(page:Int,key:String) = NetWorkClient.createNetWorkClient()?.toSearch("/article/query/$page/json",key)
+
+    suspend fun getHomeNewTabs() = NetWorkClient.createNetWorkClient()?.getNewTabs()
 }

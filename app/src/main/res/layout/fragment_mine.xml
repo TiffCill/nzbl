@@ -6,7 +6,70 @@
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/cyan484">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_300"
+            app:layout_constraintTop_toTopOf="parent"
+            android:padding="@dimen/dp_10"
+            android:id="@+id/layout_user"
+            android:background="@color/jg_whilte_60">
+            <ImageView
+                android:layout_width="@dimen/dp_150"
+                android:layout_height="@dimen/dp_150"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher_round"
+                android:layout_marginTop="@dimen/dp_30"
+                android:id="@+id/iv_head"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_21"
+                android:id="@+id/tv_name"
+                android:text="TiffCill"
+                app:layout_constraintTop_toBottomOf="@id/iv_head"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="@dimen/dp_15"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_16"
+                android:text="逆天他妈超级VIP"
+                app:layout_constraintTop_toBottomOf="@id/tv_name"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="@dimen/dp_10"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_12"
+            app:layout_constraintTop_toBottomOf="@id/layout_user"
+            android:background="@color/jg_whilte_60"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_15"
+            >
+            <ImageView
+                android:layout_width="@dimen/dp_35"
+                android:id="@+id/iv_item"
+                android:layout_height="@dimen/dp_35"
+                android:src="@mipmap/ic_launcher_round"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_16"
+                android:text="设置"
+                android:layout_marginLeft="@dimen/dp_25"
+                android:layout_gravity="center_vertical"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

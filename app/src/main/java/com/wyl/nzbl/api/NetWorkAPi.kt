@@ -33,4 +33,8 @@ interface NetWorkAPi {
     @FormUrlEncoded
     @POST
     suspend fun toSearch(@Url()url:String,@Field("k")key:String): BaseResponse<SearchData>
+
+    //首页最新tab
+    @GET("/article/listproject/0/json")
+    suspend fun getNewTabs():BaseResponse<HomeNewTabBean>
 }
