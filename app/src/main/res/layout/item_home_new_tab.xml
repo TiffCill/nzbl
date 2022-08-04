@@ -14,7 +14,7 @@
         android:padding="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginVertical="@dimen/dp_5"
-        android:background="@color/white">
+        android:background="@drawable/shape_new_tab">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_envelope"
