@@ -17,14 +17,17 @@
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/activity_details.xml" value="0.134375" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/activity_face_recognition.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/activity_register.xml" value="0.1953125" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/activity_search.xml" value="0.2" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/dialog_loading.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/fragment_community.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/fragment_home.xml" value="0.15353260869565216" />
-        <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/fragment_mine.xml" value="0.176" />
+        <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/fragment_mine.xml" value="0.2" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/fragment_video.xml" value="0.25364583333333335" />
+        <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/item_detail_options.xml" value="0.176" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/item_history.xml" value="0.1082427536231884" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/item_home_new_tab.xml" value="0.10235507246376811" />
+        <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/item_mine_options.xml" value="0.176" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/item_search.xml" value="0.1" />
         <entry key="..\:/Project/private project/nzbl/app/src/main/res/layout/tab_item.xml" value="0.25364583333333335" />
       </map>

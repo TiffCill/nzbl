@@ -17,6 +17,7 @@ import cn.jiguang.verifysdk.api.JVerificationInterface
 import cn.jiguang.verifysdk.api.PreLoginListener
 import cn.jiguang.verifysdk.api.RequestCallback
 import cn.jpush.android.api.JPushInterface
+import cn.jpush.im.android.api.JMessageClient
 import org.greenrobot.eventbus.EventBus
 
 
@@ -48,6 +49,8 @@ class MyApp : Application() {
         JVerificationInterface.setDebugMode(true)
         JPushInterface.setLbsEnable(this,false)
         JPushInterface.init(this)
+        JMessageClient.setDebugMode(true)
+        JMessageClient.init(this)
         JVerificationInterface.init(this, RequestCallback { i, t ->
             if (i == 8000) {
                 Log.e(TAG, "认证初始化成功")

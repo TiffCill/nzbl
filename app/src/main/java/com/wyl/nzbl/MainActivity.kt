@@ -12,6 +12,9 @@ import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import cn.jpush.im.android.api.JMessageClient
+import cn.jpush.im.android.api.callback.GetUserInfoCallback
+import cn.jpush.im.android.api.model.UserInfo
 import com.wyl.nzbl.base.BaseActivity
 import com.wyl.nzbl.databinding.ActivityMainBinding
 import com.wyl.nzbl.ui.fragment.CommunityFragment
@@ -21,6 +24,8 @@ import com.wyl.nzbl.ui.fragment.VideoFragment
 import com.wyl.nzbl.vm.MainViewModel
 import kotlin.collections.ArrayList
 import com.google.android.material.tabs.TabLayout
+import com.wyl.nzbl.util.Constant
+import com.wyl.nzbl.view.Logger
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(
     R.layout.activity_main,
@@ -107,7 +112,14 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(
     }
 
     override fun initData() {
-
+        JMessageClient.getUserInfo(Constant.userName,Constant.appkey, object : GetUserInfoCallback() {
+            override fun gotResult(p0: Int, p1: String?, p2: UserInfo?) {
+                Logger.i("getUserInfo","${p2.toString()}")
+                if (p2 == null) return
+                Constant.nikeName = p2.nickname
+                Constant.userId = p2.userID.toString()
+            }
+        })
     }
 
     override fun initVariable() {

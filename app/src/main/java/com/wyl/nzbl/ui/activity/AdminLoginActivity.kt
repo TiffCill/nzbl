@@ -12,11 +12,14 @@ import androidx.core.graphics.convertTo
 import cn.jiguang.verifysdk.api.*
 import cn.jpush.android.api.CustomPushNotificationBuilder
 import cn.jpush.android.api.JPushInterface
+import cn.jpush.im.android.api.JMessageClient
+import cn.jpush.im.api.BasicCallback
 import com.wyl.nzbl.MainActivity
 import com.wyl.nzbl.MyApp
 import com.wyl.nzbl.R
 import com.wyl.nzbl.base.BaseActivity
 import com.wyl.nzbl.databinding.ActivityAdminLoginBinding
+import com.wyl.nzbl.view.Logger
 import com.wyl.nzbl.vm.AdminViewModel
 
 class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBinding>(
@@ -25,22 +28,24 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
 ),
     View.OnClickListener {
     private val TAG = AdminLoginActivity::javaClass.name
-    private var dialog : PopupWindow? = null
-    private var inflater : View? = null
+    private var dialog: PopupWindow? = null
+    private var inflater: View? = null
     override fun initView() {
         setFullScreen()
 
-        Log.e(TAG, "initView: ${JPushInterface.getRegistrationID(this)}   " +
-                "${NotificationManagerCompat.from(this!!).areNotificationsEnabled()}" +
-                "\n"
+        Log.e(
+            TAG, "initView: ${JPushInterface.getRegistrationID(this)}   " +
+                    "${NotificationManagerCompat.from(this!!).areNotificationsEnabled()}" +
+                    "\n"
         )
         inflater = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null)
-        dialog = PopupWindow(inflater,ViewGroup.LayoutParams.WRAP_CONTENT,300)
+        dialog = PopupWindow(inflater, ViewGroup.LayoutParams.WRAP_CONTENT, 300)
         dialog!!.setBackgroundDrawable(ColorDrawable())
         dialog!!.isOutsideTouchable = false
 
         mDataBinding.btnOther.setOnClickListener(this)
         mDataBinding.btnLogin.setOnClickListener(this)
+        mDataBinding.btnRegister.setOnClickListener(this)
 
         val customPushNotificationBuilder = CustomPushNotificationBuilder(
             applicationContext,
@@ -53,7 +58,7 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
         customPushNotificationBuilder.statusBarDrawable = R.drawable.logo
         customPushNotificationBuilder.layoutIconDrawable = R.drawable.launcher_button
         customPushNotificationBuilder.developerArg0 = "developerArg2"
-        JPushInterface.setPushNotificationBuilder(2,customPushNotificationBuilder)
+        JPushInterface.setPushNotificationBuilder(2, customPushNotificationBuilder)
     }
 
 
@@ -77,6 +82,7 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
         var intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
+        finish()
     }
 
     override fun initData() {
@@ -99,19 +105,42 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
             }
             //登陆
             mDataBinding.btnLogin.id -> {
-                JPushInterface.setAlias(MyApp.context,5000,"ceshi")
-                gotoMainActivity()
-                mViewModel.toLogin(
-                    mDataBinding.etAdmin.text.toString(),
-                    mDataBinding.etPassword.text.toString()
-                )
-//                JMessageClient.login("TiffCill","12345678",object : BasicCallback() {
-//                    override fun gotResult(p0: Int, p1: String?) {
-//                        Toast.makeText(MyApp.context, "[$p0]>>>  $p1", Toast.LENGTH_SHORT).show()
-//                    }
-//                })
+                adminLogin()
+            }
+            mDataBinding.btnRegister.id ->{
+                startActivity(Intent(this,RegisterActivity::class.java))
             }
         }
+    }
+
+    /**
+     * 账号登录
+     */
+    private fun adminLogin() {
+        handleLoadingView()
+        val admin = mDataBinding.etAdmin.text.toString()
+        val password = mDataBinding.etPassword.text.toString()
+        JPushInterface.setAlias(MyApp.context, 5000, "ceshi")
+
+
+        if (admin == null || admin.isEmpty() || password == null || password.isEmpty()) return
+
+        mViewModel.toLogin(
+            admin,
+            password
+        )
+
+        JMessageClient.login(admin, password, object : BasicCallback() {
+            override fun gotResult(p0: Int, p1: String?) {
+                if (p0 == 0) {
+                    gotoMainActivity()
+                    Logger.i("JmessageLogin", "$p0   $p1 登录成功")
+                } else {
+                    Logger.i("JmessageLogin", "$p0   $p1 失败")
+                    Toast.makeText(MyApp.context, "[$p0]>>>  $p1", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 
     /**
@@ -173,12 +202,13 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
      * 控制loading图的展示隐藏
      */
     private fun handleLoadingView() {
-        if (dialog!!.isShowing)dialog?.dismiss() else {
+        if (dialog!!.isShowing) dialog?.dismiss() else {
             dialog?.contentView = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null)
-            dialog?.showAtLocation(mDataBinding.btnLogin,Gravity.CENTER,0,0)}
+            dialog?.showAtLocation(mDataBinding.btnLogin, Gravity.CENTER, 0, 0)
+        }
 
         var myWindow = window.attributes
-        myWindow.alpha = if (myWindow.alpha == 0.5f)1.0f else 0.5f
+        myWindow.alpha = if (myWindow.alpha == 0.5f) 1.0f else 0.5f
         window.attributes = myWindow
     }
 
@@ -191,9 +221,13 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
             // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
             // a general rule, you should design your app to hide the status bar whenever you
             // hide the navigation bar.
-            systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
     }
 
 
@@ -263,7 +297,7 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
             .setPrivacyText("登录即同意", "并使用本机号码登录")
             .addBottomView(otherTxt, JVerifyUIClickCallback { context, view ->
                 Log.e(TAG, "getUiConfig: dissmiss")
-                var intent = Intent(applicationContext,OnOpenClickActivity::class.java)
+                var intent = Intent(applicationContext, OnOpenClickActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             })
