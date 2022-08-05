@@ -108,12 +108,12 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
 
     //极光\n' +
-    implementation 'cn.jiguang.sdk.plugin:xiaomi:4.6.6'
-    implementation 'cn.jiguang.sdk.plugin:huawei:4.6.6'
-    implementation 'cn.jiguang.sdk.plugin:vivo:4.6.6'
-    implementation 'cn.jiguang.sdk.plugin:oppo:4.6.6'
+    implementation 'cn.jiguang.sdk.plugin:xiaomi:4.7.2'
+    implementation 'cn.jiguang.sdk.plugin:huawei:4.7.2'
+    implementation 'cn.jiguang.sdk.plugin:vivo:4.7.2'
+    implementation 'cn.jiguang.sdk.plugin:oppo:4.7.2'
     implementation 'com.huawei.hms:push:6.3.0.304'
-    implementation 'cn.jiguang.sdk:jpush-google:4.6.4'
+    implementation 'cn.jiguang.sdk:jpush-google:4.7.2'
     implementation 'cn.jiguang.sdk:jverification:2.9.1.1'
     implementation 'cn.jiguang.sdk:jshare:2.0.0'
     implementation 'cn.jiguang.sdk:jmessage:2.9.2'

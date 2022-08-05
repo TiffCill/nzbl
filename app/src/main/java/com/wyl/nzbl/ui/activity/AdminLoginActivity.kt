@@ -1,5 +1,6 @@
 package com.wyl.nzbl.ui.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Color.blue
@@ -7,6 +8,8 @@ import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.convertTo
 import cn.jiguang.verifysdk.api.*
@@ -107,24 +110,34 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
             mDataBinding.btnLogin.id -> {
                 adminLogin()
             }
-            mDataBinding.btnRegister.id ->{
-                startActivity(Intent(this,RegisterActivity::class.java))
+            mDataBinding.btnRegister.id -> {
+                openActivityForResult.launch(Intent(this, RegisterActivity::class.java))
             }
         }
     }
+
+    private val openActivityForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK){
+                val data = result.data
+                mDataBinding.etAdmin.setText(data?.extras?.getString("admin"))
+                mDataBinding.etPassword.setText(data?.extras?.getString("pwd"))
+            }
+        }
 
     /**
      * 账号登录
      */
     private fun adminLogin() {
-        handleLoadingView()
+
         val admin = mDataBinding.etAdmin.text.toString()
         val password = mDataBinding.etPassword.text.toString()
         JPushInterface.setAlias(MyApp.context, 5000, "ceshi")
-
-
-        if (admin == null || admin.isEmpty() || password == null || password.isEmpty()) return
-
+        if (admin == null || admin.isEmpty() || password == null || password.isEmpty()) {
+            Toast.makeText(this, "账号或密码不得为空", Toast.LENGTH_SHORT).show()
+            return
+        }
+        handleLoadingView()
         mViewModel.toLogin(
             admin,
             password

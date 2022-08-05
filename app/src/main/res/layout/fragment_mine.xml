@@ -28,15 +28,15 @@
                 android:scaleType="centerCrop"
                 android:src="@mipmap/ic_launcher_round"
                 android:layout_marginTop="@dimen/dp_30"
-                android:id="@+id/iv_head"/>
+                android:id="@+id/iv_avatar"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_21"
                 android:id="@+id/tv_name"
-                android:text="TiffCill"
-                app:layout_constraintTop_toBottomOf="@id/iv_head"
+                android:text=""
+                app:layout_constraintTop_toBottomOf="@id/iv_avatar"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginTop="@dimen/dp_15"

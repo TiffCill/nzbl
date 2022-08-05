@@ -6,5 +6,6 @@ class Constant {
         var appkey :String? = null
         var userId :String? = null
         var nikeName :String? = null
+        var avatar :String? = null
     }
 }

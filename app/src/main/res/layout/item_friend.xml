@@ -7,13 +7,27 @@
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/dp_10"
+        android:layout_marginVertical="@dimen/dp_1"
+        android:background="@color/jg_whilte_60">
+
+            <ImageView
+                android:layout_width="@dimen/dp_35"
+                android:layout_height="@dimen/dp_35"
+                android:id="@+id/iv_avatar"
+                android:layout_marginLeft="@dimen/dp_35"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{friendUserInfo.nickname}"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/iv_avatar"
+                android:layout_marginLeft="@dimen/dp_35"
                 android:textSize="@dimen/sp_21"
                 />
     </androidx.constraintlayout.widget.ConstraintLayout>
