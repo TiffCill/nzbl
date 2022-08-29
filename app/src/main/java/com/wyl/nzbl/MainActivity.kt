@@ -1,6 +1,8 @@
 package com.wyl.nzbl
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,19 +15,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import cn.jpush.im.android.api.JMessageClient
-import cn.jpush.im.android.api.callback.GetUserInfoCallback
-import cn.jpush.im.android.api.model.UserInfo
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback
+import com.google.android.material.tabs.TabLayout
 import com.wyl.nzbl.base.BaseActivity
 import com.wyl.nzbl.databinding.ActivityMainBinding
 import com.wyl.nzbl.ui.fragment.CommunityFragment
 import com.wyl.nzbl.ui.fragment.HomeFragment
 import com.wyl.nzbl.ui.fragment.MineFragment
 import com.wyl.nzbl.ui.fragment.VideoFragment
-import com.wyl.nzbl.vm.MainViewModel
-import kotlin.collections.ArrayList
-import com.google.android.material.tabs.TabLayout
 import com.wyl.nzbl.util.Constant
-import com.wyl.nzbl.view.Logger
+import com.wyl.nzbl.vm.MainViewModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(
     R.layout.activity_main,
@@ -40,12 +41,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(
 
 
     override fun initView() {
-
+        setFullScreen()
         Log.e(TAG, "initView: $intent")
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = Color.parseColor("#717171")
-
         var fragmentList = ArrayList<Fragment>()
         fragmentList.add(HomeFragment())
         fragmentList.add(CommunityFragment())
@@ -106,20 +103,41 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(
         })
     }
 
+    /**
+     * 适配全面屏
+     */
+    private fun setFullScreen() {
+        val window = window
+        val decorView = window.decorView
+        decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        Objects.requireNonNull(supportActionBar)?.hide()
+    }
 
     override fun initVM() {
 
     }
 
     override fun initData() {
-        JMessageClient.getUserInfo(Constant.userName,Constant.appkey, object : GetUserInfoCallback() {
-            override fun gotResult(p0: Int, p1: String?, p2: UserInfo?) {
-                Logger.i("getUserInfo","${p2.toString()}")
-                if (p2 == null) return
-                Constant.nikeName = p2.nickname
-                Constant.userId = p2.userID.toString()
+        val myInfo = JMessageClient.getMyInfo() ?: return
+        Constant.nikeName = myInfo.nickname
+        Constant.userId = myInfo.userID.toString()
+        myInfo.getAvatarBitmap(object : GetAvatarBitmapCallback() {
+            override fun gotResult(
+                responseCode: Int,
+                responseMessage: String,
+                avatarBitmap: Bitmap
+            ) {
+                Constant.avatar =
+                    if (responseCode == 0) avatarBitmap else BitmapFactory.decodeResource(
+                        resources,
+                        R.mipmap.ic_launcher_round
+                    )
             }
         })
+        Constant.appkey = myInfo.appKey
+        Constant.userName = myInfo.userName
     }
 
     override fun initVariable() {
@@ -174,3 +192,4 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(
     }
 
 }
+

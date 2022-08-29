@@ -17,4 +17,5 @@
     <color name="light_yellow">#B3B372</color>
     <color name="orange">#BF8641</color>
     <color name="yellow">#FFEB3B</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

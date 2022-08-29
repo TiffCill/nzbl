@@ -45,11 +45,12 @@
             android:name=".ui.activity.RegisterActivity"
             android:launchMode="singleInstance"></activity>
 
+<!--            android:theme="@style/AdminActivity"-->
         <activity
             android:name=".ui.activity.AdminLoginActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/AdminActivity">
+            android:theme="@style/Theme.Nzbl">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -70,7 +71,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/TranslucentTheme">
+            android:theme="@style/Theme.Nzbl">
             <intent-filter>
                 <data android:scheme="jpushwyl" />
                 <action android:name="android.intent.action.VIEW" />
@@ -79,13 +80,33 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.cmic.gen.sdk.view.GenLoginAuthActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
+            android:theme="@style/ActivityDialogStyle"
+            tools:node="replace">
+        </activity>
+        <!-- since 2.0.0 optional 可选项，使用一键登录功能必须添加 -->
+        <!-- since 2.1.1 optional 可选项，通过screenOrientation设置授权页面横竖屏展示 -->
+        <activity
+            android:name="cn.jiguang.verifysdk.CtLoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
+            android:theme="@style/ActivityDialogStyle"
+            tools:node="replace">
+        </activity>
         <!-- Since JCore2.0.0 Required SDK核心功能-->
         <!-- 可配置android:process参数将Service放在其他进程中；android:enabled属性不能是false -->
         <!-- 这个是自定义Service，要继承极光JCommonService，可以在更多手机平台上使得推送通道保持的更稳定 -->
         <service
             android:name=".jpush.JpushService"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false"
+            android:process=":pushcore">
             <intent-filter>
                 <action android:name="cn.jiguang.user.service.action" />
             </intent-filter>
@@ -150,6 +171,7 @@
         <meta-data
             android:name="com.huawei.hms.client.cpid"
             android:value="2850086000501549181" />
+
     </application>
 
 </manifest>

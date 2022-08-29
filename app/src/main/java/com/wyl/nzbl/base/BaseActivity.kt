@@ -16,9 +16,12 @@ import cn.jpush.android.api.JPushInterface
 import com.wyl.nzbl.MyApp
 
 
-abstract class BaseActivity<VM:ViewModel,DB: ViewDataBinding>(var layoutId:Int, val vmClass:Class<VM>):AppCompatActivity(),StatusListener{
-    protected lateinit var mViewModel:VM
-    protected lateinit var mDataBinding:DB
+abstract class BaseActivity<VM : ViewModel, DB : ViewDataBinding>(
+    var layoutId: Int,
+    val vmClass: Class<VM>
+) : AppCompatActivity(), StatusListener {
+    protected lateinit var mViewModel: VM
+    protected lateinit var mDataBinding: DB
     protected lateinit var mContext: Context
     protected lateinit var mActivity: Activity
 
@@ -27,15 +30,22 @@ abstract class BaseActivity<VM:ViewModel,DB: ViewDataBinding>(var layoutId:Int, 
         super.onCreate(savedInstanceState)
         mContext = baseContext
         mActivity = this
-        mDataBinding = DataBindingUtil.setContentView(this,layoutId)
-        mViewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(vmClass)
+        mDataBinding = DataBindingUtil.setContentView(this, layoutId)
+        mViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(vmClass)
         initView()
         initVM()
-        initData()
-        initVariable()
+
     }
 
-    override fun onConnectStatus(isConnected : Boolean) {
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            initData()
+            initVariable()
+        }
+    }
+
+    override fun onConnectStatus(isConnected: Boolean) {
         if (isConnected) initData()
     }
 
@@ -58,6 +68,7 @@ abstract class BaseActivity<VM:ViewModel,DB: ViewDataBinding>(var layoutId:Int, 
         if (!isRunning) JPushInterface.stopPush(MyApp.context)
         Log.e("BaseActivity", "onStop: $isRunning")
     }
+
     /**
      * 程序是否在前台运行
      *

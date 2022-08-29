@@ -23,7 +23,8 @@ class FriendAdapter(
     override fun bindData(dataBinding: ViewDataBinding, data: UserInfo, layout: Int) {
         val ivAvatar = dataBinding.root.findViewById<ImageView>(R.id.iv_avatar)
         Glide.with(context)
-            .load(if (data.avatar !=  null && data.avatar.isNotEmpty()) data.avatar else R.mipmap.ic_launcher)
+            .load(data.avatar)
+            .error(R.mipmap.ic_launcher)
             .into(ivAvatar)
     }
 }

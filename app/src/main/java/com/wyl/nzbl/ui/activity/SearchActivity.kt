@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import cn.jiguang.junion.uibase.ui.widget.LoadingView
 import com.wyl.nzbl.BR
 import com.wyl.nzbl.MyApp
 import com.wyl.nzbl.base.BaseActivity
@@ -19,6 +20,7 @@ import com.wyl.nzbl.model.home.SearchListData
 import com.wyl.nzbl.model.home.SearchHotKeyData
 import com.wyl.nzbl.ui.adapter.SearchAdapter
 import com.wyl.nzbl.ui.adapter.HotKeyAdapter
+import com.wyl.nzbl.util.LoadingDialog
 import com.wyl.nzbl.view.Logger
 
 class SearchActivity : BaseActivity<SearchViewModel, ActivitySearchBinding>(
@@ -37,7 +39,7 @@ class SearchActivity : BaseActivity<SearchViewModel, ActivitySearchBinding>(
                 return@setOnClickListener
             }
             mViewModel.toSearch(0, mDataBinding.editSearch.text.toString())
-            showEnableLoading()
+            LoadingDialog.getInterface(mActivity).handleDialog(mDataBinding.rvHistory)
         }
 
         var sparseArray = SparseArray<Int>()
@@ -76,20 +78,20 @@ class SearchActivity : BaseActivity<SearchViewModel, ActivitySearchBinding>(
             if (data.isEmpty() || data == null)return@observe
             hotKeys.addAll(data)
             hotKeyAdapter.notifyDataSetChanged()
-            showEnableLoading()
+            LoadingDialog.getInterface(mActivity).handleDialog(mDataBinding.rvHistory)
         }
         mViewModel.searchData.observe(this) {
             this.searchData.clear()
             val data = it.data ?: return@observe
             this.searchData.addAll(data.datas)
             searchAdapter.notifyDataSetChanged()
-            showEnableLoading()
+            LoadingDialog.getInterface(mActivity).handleDialog(mDataBinding.rvHistory)
         }
     }
 
     override fun initData() {
         mViewModel.getHotKey()
-        showEnableLoading()
+        LoadingDialog.getInterface(mActivity).handleDialog(mDataBinding.rvHistory)
     }
 
     private fun showEnableLoading() {
@@ -127,7 +129,7 @@ class SearchActivity : BaseActivity<SearchViewModel, ActivitySearchBinding>(
             Logger.e("clickItem", "$name")
             Toast.makeText(MyApp.context, "$name", Toast.LENGTH_SHORT).show()
             mViewModel.toSearch(0, name!!)
-            showEnableLoading()
+            LoadingDialog.getInterface(this@SearchActivity.mActivity).handleDialog(mDataBinding.rvHistory)
         }
     }
 

@@ -22,8 +22,11 @@ import com.wyl.nzbl.MyApp
 import com.wyl.nzbl.R
 import com.wyl.nzbl.base.BaseActivity
 import com.wyl.nzbl.databinding.ActivityAdminLoginBinding
+import com.wyl.nzbl.util.Constant
+import com.wyl.nzbl.util.LoadingDialog
 import com.wyl.nzbl.view.Logger
 import com.wyl.nzbl.vm.AdminViewModel
+import java.util.*
 
 class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBinding>(
     R.layout.activity_admin_login,
@@ -67,7 +70,8 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
 
     override fun initVM() {
         mViewModel.loginResponse.observe(this, androidx.lifecycle.Observer {
-            handleLoadingView()
+            LoadingDialog.getInterface(this).handleDialog(mDataBinding.btnLogin)
+//            LoadingDialog.getInterface(this).handleDialog(mDataBinding.btnLogin)
             if (it.errorCode == 0) {
                 gotoMainActivity()
             } else {
@@ -94,6 +98,11 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
 
     override fun initVariable() {
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LoadingDialog.getInterface(this).closeDialog()
     }
 
     /**
@@ -129,7 +138,6 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
      * 账号登录
      */
     private fun adminLogin() {
-
         val admin = mDataBinding.etAdmin.text.toString()
         val password = mDataBinding.etPassword.text.toString()
         JPushInterface.setAlias(MyApp.context, 5000, "ceshi")
@@ -137,7 +145,7 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
             Toast.makeText(this, "账号或密码不得为空", Toast.LENGTH_SHORT).show()
             return
         }
-        handleLoadingView()
+        LoadingDialog.getInterface(this).handleDialog(mDataBinding.btnLogin)
         mViewModel.toLogin(
             admin,
             password
@@ -165,7 +173,7 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
         val verifyIsInitSuccess: Boolean = JVerificationInterface.isInitSuccess()
         val uiConfig = getUiConfig()
         if (verifyEnable && verifyIsInitSuccess) {
-            handleLoadingView()
+            LoadingDialog.getInterface(this).handleDialog(mDataBinding.btnLogin)
             var loginSettings: LoginSettings = LoginSettings()
             loginSettings.timeout = 10000
             loginSettings.isAutoFinish = true
@@ -198,7 +206,7 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
                         Toast.makeText(this, "autoLogin  $i  \n $s \n $s2", Toast.LENGTH_SHORT)
                             .show()
                     }
-                    handleLoadingView()
+                    LoadingDialog.getInterface(this).handleDialog(mDataBinding.btnLogin)
                 }
             )
         } else {
@@ -211,36 +219,28 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
     }
 
 
-    /**
-     * 控制loading图的展示隐藏
-     */
-    private fun handleLoadingView() {
-        if (dialog!!.isShowing) dialog?.dismiss() else {
-            dialog?.contentView = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null)
-            dialog?.showAtLocation(mDataBinding.btnLogin, Gravity.CENTER, 0, 0)
-        }
 
-        var myWindow = window.attributes
-        myWindow.alpha = if (myWindow.alpha == 0.5f) 1.0f else 0.5f
-        window.attributes = myWindow
-    }
+//    private fun handleLoadingView(){
+//        if (dialog!!.isShowing) dialog?.dismiss() else {
+//            dialog?.contentView = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null)
+//            dialog?.showAtLocation(mDataBinding.btnLogin, Gravity.CENTER, 0, 0)
+//        }
+//
+//        var myWindow = window.attributes
+//        myWindow.alpha = if (myWindow.alpha == 0.5f) 1.0f else 0.5f
+//        window.attributes = myWindow
+//    }
 
     /**
      * 适配全面屏
      */
     private fun setFullScreen() {
-        window.decorView.apply {
-            // Hide both the navigation bar and the status bar.
-            // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
-            // a general rule, you should design your app to hide the status bar whenever you
-            // hide the navigation bar.
-            systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        }
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        val window = window
+        val decorView = window.decorView
+        decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        Objects.requireNonNull(supportActionBar)?.hide()
     }
 
 
@@ -270,8 +270,8 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
         returnBtn.setImageResource(R.drawable.back_)
         return JVerifyUIConfig.Builder()
 //            .setAuthBGVideoPath("android.resource://" + this.packageName + "/" + R.raw.launch_video,null)
-//            .setAuthBGImgPath("background")
-//            .setStatusBarTransparent(true)
+            .setAuthBGImgPath("background")
+            .setStatusBarTransparent(true)
             .setStatusBarHidden(false)
             .setStatusBarDarkMode(true)
             .setNavHidden(true)

@@ -3,6 +3,7 @@ package com.wyl.nzbl.ui.fragment
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -10,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import android.widget.Toast
@@ -88,8 +90,9 @@ class MineFragment : BaseFragment<MineViewModel, FragmentMineBinding>(
     override fun initView() {
         //加载头像
         Glide.with(MyApp.getContext())
-            .load(if (Constant.avatar != null && Constant.avatar!!.isNotEmpty()) Constant.avatar else R.mipmap.ic_launcher)
+            .load(if (Constant.avatar != null) Constant.avatar else R.mipmap.ic_launcher)
             .into(mDataBinding.ivAvatar)
+
         mDataBinding.ivAvatar.setOnClickListener(this)
         mDataBinding.tvName.text = Constant.nikeName
     }
@@ -112,6 +115,7 @@ class MineFragment : BaseFragment<MineViewModel, FragmentMineBinding>(
      * 打开相册
      */
     private fun openPhotoAlbum() {
+        deleteAvatarFile()                 //必须在打开相册前删除原有图片文件，文件操作期间删除文件会失败。
         if (ActivityCompat.checkSelfPermission(
                 MyApp.getContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -142,6 +146,7 @@ class MineFragment : BaseFragment<MineViewModel, FragmentMineBinding>(
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_PERMISSIONS_BACK && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Logger.i("onRequestPermissionsResult","用户同意授权权限")
             val intent = Intent(Intent.ACTION_PICK)
 //            intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.type = "image/*"
@@ -153,11 +158,6 @@ class MineFragment : BaseFragment<MineViewModel, FragmentMineBinding>(
      * 跳转剪切图片
      */
     private fun cropPhoto(uri : Uri){
-        val file = File(buildUri().path)
-        if (file.exists()){
-            file.delete()
-        }
-
         val cropIntent = Intent("com.android.camera.action.CROP")
         cropIntent.setDataAndType(uri, "image/*")
         cropIntent.putExtra("crop", "true")
@@ -175,6 +175,21 @@ class MineFragment : BaseFragment<MineViewModel, FragmentMineBinding>(
     }
 
     /**
+     * 删除原有文件
+     */
+    private fun deleteAvatarFile(){
+        var file = File(buildUri().path)
+        Logger.e("deleteAvatarFile", "deleteAvatarFile: ${buildUri().path}")
+        if (file.exists()){
+            if (file.delete()){
+                Toast.makeText(MyApp.getContext(), "成功", Toast.LENGTH_LONG).show()
+            }else{
+                Toast.makeText(MyApp.getContext(), "失败", Toast.LENGTH_LONG).show()
+            }
+        }
+        Logger.i("deleteFile","${file.exists()}")
+    }
+    /**
      * 构建uri
      */
     private fun buildUri(): Uri{
@@ -183,7 +198,7 @@ class MineFragment : BaseFragment<MineViewModel, FragmentMineBinding>(
                 .appendPath("avatar_file.jpg")
                 .build()
         }
-        return Uri.fromFile(requireActivity().cacheDir).buildUpon()
+        return Uri.fromFile(activity?.cacheDir).buildUpon()
             .appendPath("avatar_file.jpg").build()
     }
     /**
@@ -210,6 +225,7 @@ class MineFragment : BaseFragment<MineViewModel, FragmentMineBinding>(
                     }
                 })
             }
+
             PICK_IMAGE_BACK -> {        //相册图片回调
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val photoUrl = data.data
