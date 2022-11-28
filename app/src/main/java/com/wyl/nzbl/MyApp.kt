@@ -4,6 +4,7 @@ import android.app.*
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Message
 import android.util.Log
 //import cn.jiguang.ads.nativ.api.JNativeAdApi
 //import cn.jiguang.ads.notify.api.JNotifyAdApi
@@ -20,8 +21,11 @@ import cn.jiguang.verifysdk.api.PreLoginListener
 import cn.jiguang.verifysdk.api.RequestCallback
 import cn.jpush.android.api.JPushInterface
 import cn.jpush.im.android.api.JMessageClient
+import cn.jpush.im.android.api.event.MessageEvent
+import com.wyl.nzbl.controller.OnMessageEvent
 import com.wyl.nzbl.util.Constant
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Logger
 
 
 class MyApp : Application() {
@@ -29,10 +33,15 @@ class MyApp : Application() {
 
     companion object {
         var context: Application? = null
+        var onMessageEventListener : OnMessageEvent ?= null
         fun getContext(): Context {
             return context!!
         }
+        fun addOnMessageEventListener(onMessageEventListener: OnMessageEvent){
+            this.onMessageEventListener = onMessageEventListener
+        }
     }
+
 
     override fun onCreate() {
         super.onCreate()
@@ -58,6 +67,7 @@ class MyApp : Application() {
         JPushInterface.init(this)
         JMessageClient.setDebugMode(true)
         JMessageClient.init(this)
+        JMessageClient.registerEventReceiver(this)  //注册消息接收
         JVerificationInterface.init(this, 10000,RequestCallback { i, t ->
             if (i == 8000) {
                 Log.e(TAG, "认证初始化成功")
@@ -82,6 +92,21 @@ class MyApp : Application() {
 //        // 通知栏广告初始化
 //        JNotifyAdApi.init(this)
     }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        JMessageClient.unRegisterEventReceiver(this)
+    }
+    fun onEvent(event : MessageEvent){
+        com.wyl.nzbl.view.Logger.d("MyApp  getNewMessage : ", "${event.message.toJson()}")
+        if (onMessageEventListener!=null){
+            onMessageEventListener!!.getNewMessage(event)
+        }else{
+            com.wyl.nzbl.view.Logger.e("MyApp  getNewMessage : ","onMessageEventListener is null")
+        }
+    }
+
+
 
     private fun addActivityLifecycleListener() {
         context?.registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {

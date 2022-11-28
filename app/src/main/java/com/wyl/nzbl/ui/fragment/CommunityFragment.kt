@@ -1,5 +1,6 @@
 package com.wyl.nzbl.ui.fragment
 
+import android.content.Intent
 import android.util.SparseArray
 import android.view.View
 import android.widget.Toast
@@ -15,6 +16,7 @@ import com.wyl.nzbl.vm.CommunityViewModel
 import com.wyl.nzbl.R
 import com.wyl.nzbl.base.BaseItemClick
 import com.wyl.nzbl.databinding.FragmentCommunityBinding
+import com.wyl.nzbl.ui.activity.ChatActivity
 import com.wyl.nzbl.ui.adapter.FriendAdapter
 import com.wyl.nzbl.view.Logger
 
@@ -66,6 +68,14 @@ class CommunityFragment : BaseFragment<CommunityViewModel, FragmentCommunityBind
     inner class OnClickFriendItem : BaseItemClick<UserInfo>{
         override fun itemClick(data: UserInfo) {
             Toast.makeText(context, "${data.nickname}", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(activity, ChatActivity::class.java)
+            intent.putExtra("nike_name",data.nickname)
+            intent.putExtra("avatar",data.avatarFile)
+            intent.putExtra("userid",data.userID)
+            intent.putExtra("username",data.userName)
+            intent.putExtra("appkey",data.appKey)
+            startActivity(intent)
         }
     }
 }

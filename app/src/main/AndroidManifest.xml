@@ -20,24 +20,30 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.Nzbl"
         android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".ui.activity.ChatActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
+
         <activity
             android:name=".ui.activity.SearchActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
 
         <activity
             android:name=".ui.activity.AutoLoginActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
 
         <activity
             android:name=".base.BaseActivity"
-            android:exported="false"></activity>
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
         <activity
             android:name=".ui.activity.DetailsActivity"
             android:launchMode="singleInstance" />
@@ -45,7 +51,7 @@
             android:name=".ui.activity.RegisterActivity"
             android:launchMode="singleInstance"></activity>
 
-<!--            android:theme="@style/AdminActivity"-->
+        <!--            android:theme="@style/AdminActivity"-->
         <activity
             android:name=".ui.activity.AdminLoginActivity"
             android:exported="true"
@@ -71,7 +77,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.Nzbl">
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <data android:scheme="jpushwyl" />
                 <action android:name="android.intent.action.VIEW" />
@@ -87,8 +93,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/ActivityDialogStyle"
-            tools:node="replace">
-        </activity>
+            tools:node="replace"></activity>
         <!-- since 2.0.0 optional 可选项，使用一键登录功能必须添加 -->
         <!-- since 2.1.1 optional 可选项，通过screenOrientation设置授权页面横竖屏展示 -->
         <activity
@@ -97,8 +102,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/ActivityDialogStyle"
-            tools:node="replace">
-        </activity>
+            tools:node="replace"></activity>
         <!-- Since JCore2.0.0 Required SDK核心功能-->
         <!-- 可配置android:process参数将Service放在其他进程中；android:enabled属性不能是false -->
         <!-- 这个是自定义Service，要继承极光JCommonService，可以在更多手机平台上使得推送通道保持的更稳定 -->

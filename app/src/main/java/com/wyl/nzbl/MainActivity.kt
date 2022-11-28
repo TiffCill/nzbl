@@ -14,6 +14,7 @@ import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import cn.jpush.android.service.PluginXiaomiPlatformsReceiver
 import cn.jpush.im.android.api.JMessageClient
 import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback
 import com.google.android.material.tabs.TabLayout
@@ -41,7 +42,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(
 
 
     override fun initView() {
-        setFullScreen()
+//        setFullScreen()
         Log.e(TAG, "initView: $intent")
         var fragmentList = ArrayList<Fragment>()
         fragmentList.add(HomeFragment())

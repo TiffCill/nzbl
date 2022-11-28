@@ -8,14 +8,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import cn.jpush.android.api.JPushInterface
+import cn.jpush.im.android.api.model.Message
+import java.util.*
 
 abstract class BaseAdapter<D>(
     val context: Context,
-    val data: List<D>,
+    var data: List<D>,
     val layouts: SparseArray<Int>,
-    val itemClick: BaseItemClick<D>
+    val itemClick: BaseItemClick<D>,
 ) : RecyclerView.Adapter<BaseAdapter<D>.VH>() {
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         var dataBinding: ViewDataBinding =
@@ -24,7 +25,7 @@ abstract class BaseAdapter<D>(
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        val type = layouts.get(getItemViewType(position))
+        val type = layouts.get(getItemViewType(position)) ?: return
         holder.dataBinding.setVariable(type, data[position])
         holder.dataBinding.root.tag = data[position]
         holder.dataBinding.root.setOnClickListener {
