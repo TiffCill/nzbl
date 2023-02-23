@@ -117,7 +117,8 @@ dependencies {
     implementation 'cn.jiguang.sdk:jverification:2.9.1.1'
     implementation 'cn.jiguang.sdk:jshare:2.0.0'
     implementation 'cn.jiguang.sdk:jmessage:2.9.2'
-    implementation 'cn.jiguang.sdk:jcore-google:3.3.0'
+    implementation 'cn.jiguang.sdk:jcore-google:4.1.0'
+    implementation 'cn.jiguang.sdk:joperate:2.0.0'
 
     // oppo 厂商 aar 需要单独引入，请将 jiguang/libs 下 com.heytap.msp-push-x.x.x.aar 单独拷贝一份到应用 module/libs 下
 //    implementation(name: 'com.heytap.msp-push-3.0.0', ext: 'aar')

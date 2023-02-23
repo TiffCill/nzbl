@@ -4,18 +4,11 @@ import android.app.*
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Message
 import android.util.Log
-//import cn.jiguang.ads.nativ.api.JNativeAdApi
-//import cn.jiguang.ads.notify.api.JNotifyAdApi
 import cn.jiguang.api.JCoreInterface
 import cn.jiguang.api.JCoreManager
-import cn.jiguang.api.utils.JCollectionAuth
 import cn.jiguang.internal.JConstants
-//import cn.jiguang.junion.JUnionInterface
-//import cn.jiguang.union.ads.base.api.JAdApi
-//import cn.jiguang.union.ads.base.api.JAdConfig
-import cn.jiguang.union.ads.nativ.api.JNativeAdApi
+import cn.jiguang.joperate.api.JOperateInterface
 import cn.jiguang.verifysdk.api.JVerificationInterface
 import cn.jiguang.verifysdk.api.PreLoginListener
 import cn.jiguang.verifysdk.api.RequestCallback
@@ -24,8 +17,8 @@ import cn.jpush.im.android.api.JMessageClient
 import cn.jpush.im.android.api.event.MessageEvent
 import com.wyl.nzbl.controller.OnMessageEvent
 import com.wyl.nzbl.util.Constant
+import com.wyl.nzbl.view.Logger
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Logger
 
 
 class MyApp : Application() {
@@ -70,7 +63,7 @@ class MyApp : Application() {
         JMessageClient.registerEventReceiver(this)  //注册消息接收
         JVerificationInterface.init(this, 10000,RequestCallback { i, t ->
             if (i == 8000) {
-                Log.e(TAG, "认证初始化成功")
+                Logger.e(TAG, "认证初始化成功")
                 JVerificationInterface.preLogin(context, 10000, PreLoginListener { i, s ->
                     Log.e(TAG, "onCreate: $i  + $s")
                     EventBus.getDefault().postSticky("可以启动")
@@ -79,6 +72,15 @@ class MyApp : Application() {
                 Log.e(TAG, "认证初始化失败 $i   $t")
             }
         })
+
+        JOperateInterface.setDebug(true)
+        JOperateInterface.getInstance(applicationContext).init()
+
+
+        Constant.cuid = JOperateInterface.getInstance(this).cuid
+        Logger.d("JOperate","cuid == ${Constant.cuid}")
+
+
 //        JUnionInterface.init(this)
 //
 //        //JAd初始化
@@ -98,11 +100,11 @@ class MyApp : Application() {
         JMessageClient.unRegisterEventReceiver(this)
     }
     fun onEvent(event : MessageEvent){
-        com.wyl.nzbl.view.Logger.d("MyApp  getNewMessage : ", "${event.message.toJson()}")
+        Logger.d("MyApp  getNewMessage : ", "${event.message.toJson()}")
         if (onMessageEventListener!=null){
             onMessageEventListener!!.getNewMessage(event)
         }else{
-            com.wyl.nzbl.view.Logger.e("MyApp  getNewMessage : ","onMessageEventListener is null")
+            Logger.e("MyApp  getNewMessage : ","onMessageEventListener is null")
         }
     }
 
@@ -111,31 +113,31 @@ class MyApp : Application() {
     private fun addActivityLifecycleListener() {
         context?.registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                Log.e(TAG, "onActivityCreated: $activity::class.java.simpleName")
+                Log.e(TAG, "onActivityCreated: ${activity::class.java.simpleName}")
             }
 
             override fun onActivityStarted(activity: Activity) {
-                Log.e(TAG, "onActivityStarted: $activity::class.java.simpleName")
+                Log.e(TAG, "onActivityStarted: ${activity::class.java.simpleName}")
             }
 
             override fun onActivityResumed(activity: Activity) {
-                Log.e(TAG, "onActivityResumed: $activity::class.java.simpleName")
+                Log.e(TAG, "onActivityResumed: ${activity::class.java.simpleName}")
             }
 
             override fun onActivityPaused(activity: Activity) {
-                Log.e(TAG, "onActivityPaused: $activity::class.java.simpleName")
+                Log.e(TAG, "onActivityPaused: ${activity::class.java.simpleName}")
             }
 
             override fun onActivityStopped(activity: Activity) {
-                Log.e(TAG, "onActivityStopped: $activity::class.java.simpleName")
+                Log.e(TAG, "onActivityStopped: ${activity::class.java.simpleName}")
             }
 
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-                Log.e(TAG, "onActivitySaveInstanceState: $activity::class.java.simpleName")
+                Log.e(TAG, "onActivitySaveInstanceState: ${activity::class.java.simpleName}")
             }
 
             override fun onActivityDestroyed(activity: Activity) {
-                Log.e(TAG, "onActivityDestroyed: $activity::class.java.simpleName")
+                Log.e(TAG, "onActivityDestroyed: ${activity::class.java.simpleName}")
             }
         })
     }

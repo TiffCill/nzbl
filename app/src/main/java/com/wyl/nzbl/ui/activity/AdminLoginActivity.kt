@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.convertTo
+import cn.jiguang.joperate.api.JOperateInterface
 import cn.jiguang.verifysdk.api.*
 import cn.jpush.android.api.CustomPushNotificationBuilder
 import cn.jpush.android.api.JPushInterface
@@ -26,6 +27,9 @@ import com.wyl.nzbl.util.Constant
 import com.wyl.nzbl.util.LoadingDialog
 import com.wyl.nzbl.view.Logger
 import com.wyl.nzbl.vm.AdminViewModel
+import com.xiaomi.push.it
+import org.json.JSONObject
+import java.lang.Exception
 import java.util.*
 
 class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBinding>(
@@ -117,7 +121,9 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
             }
             //登陆
             mDataBinding.btnLogin.id -> {
-                adminLogin()
+                val admin = mDataBinding.etAdmin.text.toString()
+                val password = mDataBinding.etPassword.text.toString()
+                login(admin, password)
             }
             mDataBinding.btnRegister.id -> {
                 openActivityForResult.launch(Intent(this, RegisterActivity::class.java))
@@ -127,7 +133,7 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
 
     private val openActivityForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK){
+            if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 mDataBinding.etAdmin.setText(data?.extras?.getString("admin"))
                 mDataBinding.etPassword.setText(data?.extras?.getString("pwd"))
@@ -137,20 +143,19 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
     /**
      * 账号登录
      */
-    private fun adminLogin() {
-        val admin = mDataBinding.etAdmin.text.toString()
-        val password = mDataBinding.etPassword.text.toString()
+    private fun login(admin: String, password: String) {
+        LoadingDialog.getInterface(this).handleDialog(mDataBinding.btnLogin)
         JPushInterface.setAlias(MyApp.context, 5000, "ceshi")
         if (admin == null || admin.isEmpty() || password == null || password.isEmpty()) {
             Toast.makeText(this, "账号或密码不得为空", Toast.LENGTH_SHORT).show()
             return
         }
-        LoadingDialog.getInterface(this).handleDialog(mDataBinding.btnLogin)
+        //登录wanandroid
         mViewModel.toLogin(
             admin,
             password
         )
-
+        //登录极光IM
         JMessageClient.login(admin, password, object : BasicCallback() {
             override fun gotResult(p0: Int, p1: String?) {
                 if (p0 == 0) {
@@ -162,6 +167,40 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
                 }
             }
         })
+        //设置极光分析用户标识
+        var property = JSONObject()
+        property.put("admin", admin)
+        property.put("password", password)
+        JOperateInterface.getInstance(applicationContext).login(
+            property
+        ) { code, msg ->
+            if (code != 0) {
+                Logger.e("JOperate", "设置用户识别失败  code == $code  , msg == $msg   ")
+                return@login
+            }
+            Logger.d("JOperate", "设置用户识别成功 code == $code  , msg == $msg   ")
+        }
+        //设置极光分析用户联系方式
+        var contact = JSONObject()
+        contact.put("phone_number", "17610980168".replace("\\ufeff", ""))
+        contact.put("registration_id", Constant.registrationId?.replace("\\ufeff", ""))
+        try {
+            var json = JSONObject(contact.toString())
+            json.put("name","哈哈哈哈")
+            val  name = json.getString("name")
+            val phoneNumber = json.getString("phone_number")
+            Log.e(TAG, "login: ${json.toString()}  $name  $phoneNumber" )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        JOperateInterface.getInstance(applicationContext).setChannel(contact) { code, msg ->
+            if (code != 0) {
+                Logger.e("JOperate", "设置用户联系方式失败  code == $code  , msg == $msg   ")
+                return@setChannel
+            }
+            Logger.e("JOperate", "设置用户联系方式成功  code == $code  , msg == $msg   ")
+        }
+
     }
 
     /**
@@ -201,7 +240,7 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
                 VerifyListener { i, s, s2 ->
                     Log.e(TAG, "autoLogin: $i    \n $s  \n $s2")
                     if (i == 6000) {
-                        mViewModel.toLogin("17610980168", "12345678")
+                        login("17610980168", "12345678")
                     } else {
                         Toast.makeText(this, "autoLogin  $i  \n $s \n $s2", Toast.LENGTH_SHORT)
                             .show()
@@ -217,7 +256,6 @@ class AdminLoginActivity : BaseActivity<AdminViewModel, ActivityAdminLoginBindin
             ).show()
         }
     }
-
 
 
 //    private fun handleLoadingView(){

@@ -14,6 +14,7 @@ import com.wyl.nzbl.MyApp
 import com.wyl.nzbl.base.StatusListener
 import com.wyl.nzbl.base.StatusObserve
 import com.wyl.nzbl.ui.activity.AutoLoginActivity
+import com.wyl.nzbl.util.Constant
 import com.wyl.nzbl.view.Logger
 import org.greenrobot.eventbus.EventBus
 
@@ -86,19 +87,23 @@ class JpushReceiver : JPushMessageReceiver() {
 
     override fun onCommandResult(p0: Context?, p1: CmdMessage?) {
         Log.e(TAG, "[onCommandResult] $p1")
+        if (p1 != null && p1?.cmd == 2005){
+            Constant.registrationId = p1.msg
+        }
         if (p1 != null && p1?.cmd == 10000 && p1?.extra != null) {
             val token = p1?.extra.getString("token")
             val platform = p1?.extra.getInt("platform")
             var deviceName = "unknown"
-            when (platform) {
-                1 -> deviceName = "小米"
-                2 -> deviceName = "华为"
-                3 -> deviceName = "魅族"
-                4 -> deviceName = "OPPO"
-                5 -> deviceName = "VIVO"
-                6 -> deviceName = "ASUS"
-                7 -> deviceName = "FCM"
-                8 -> deviceName = "小米"
+            deviceName = when (platform) {
+                1 -> "小米"
+                2 -> "华为"
+                3 -> "魅族"
+                4 -> "OPPO"
+                5 -> "VIVO"
+                6 -> "ASUS"
+                7 -> "荣耀"
+                8 -> "FCM"
+                else -> "极光"
             }
             Log.e(TAG, "onCommandResult: 获取到 $deviceName 的token : $token")
         }
